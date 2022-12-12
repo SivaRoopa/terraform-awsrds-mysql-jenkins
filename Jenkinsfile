@@ -14,6 +14,12 @@ pipeline {
         SECRET_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
     stages {
+            
+            stage('Git checkout') {
+            steps{
+                git branch: 'main', credentialsId: 'Git-Credentials', url: 'https://github.com/SivaRoopa/terraform-awsrds-mysql-jenkins.git'
+                }
+            }
             stage('TerraformInit'){
             steps {
                 
