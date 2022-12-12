@@ -27,10 +27,3 @@ pipeline {
                     }
                 }
             }
-
-        stage('terraform Init') {
-            steps{
-                sh 'terraform init'
-            }
-        }
-}
