@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+       terraform 'terraform'
+    }
 
     parameters {
         string(name: 'environment', defaultValue: 'terraform', description: 'Workspace/environment file to use for deployment')
@@ -25,64 +28,9 @@ pipeline {
                 }
             }
 
-        stage('Plan') {
-            when {
-                not {
-                    equals expected: true, actual: params.destroy
-                }
-            }
-            
-            steps {
-                sh 'terraform init -input=false'
-                sh 'terraform workspace select ${environment} || terraform workspace new ${environment}'
-
-                sh "terraform plan -input=false -out tfplan "
-                sh 'terraform show -no-color tfplan > tfplan.txt'
+        stage('terraform Init') {
+            steps{
+                sh 'terraform init'
             }
         }
-        stage('Approval') {
-           when {
-               not {
-                   equals expected: true, actual: params.autoApprove
-               }
-               not {
-                    equals expected: true, actual: params.destroy
-                }
-           }
-           
-                
-            
-
-           steps {
-               script {
-                    def plan = readFile 'tfplan.txt'
-                    input message: "Do you want to apply the plan?",
-                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
-               }
-           }
-       }
-
-        stage('Apply') {
-            when {
-                not {
-                    equals expected: true, actual: params.destroy
-                }
-            }
-            
-            steps {
-                echo "hello terraform apply"
-            }
-        }
-        
-        stage('Destroy') {
-            when {
-                equals expected: true, actual: params.destroy
-            }
-        
-        steps {
-           sh "terraform destroy --auto-approve"
-        }
-    }
-
-  }
-
+}
