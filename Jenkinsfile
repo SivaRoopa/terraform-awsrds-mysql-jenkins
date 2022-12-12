@@ -26,7 +26,7 @@ pipeline {
                         }
                     }
                 }
-            }
+            
         stage('terraform Init check') {
             steps{
                 script {
@@ -34,4 +34,4 @@ pipeline {
                 }
             }
         }
-}
+} }
