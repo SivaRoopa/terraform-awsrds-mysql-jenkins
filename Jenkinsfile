@@ -20,47 +20,42 @@ pipeline {
                 git branch: 'main', credentialsId: 'Git-Credentials', url: 'https://github.com/SivaRoopa/terraform-awsrds-mysql-jenkins.git'
                 }
             }
-            stage('TerraformInit'){
+            stage('Terraform Init'){
             steps {
                 
-                    sh "terraform init -input=false"
-                    sh "echo \$PWD"
-                    sh "whoami"
+                    bat "terraform init -input=false"
+        }
+
+        stage('Terraform Format'){
+            steps {
+                    bat "terraform fmt -list=true -write=false -diff=true -check=true"
+
             }
         }
 
-        // stage('TerraformFormat'){
-        //     steps {
-        //             sh "terraform fmt -list=true -write=false -diff=true -check=true"
+        stage('Terraform Validate'){
+            steps {
+                
+                    bat "terraform validate"
+            }
+        }
 
-        //     }
-        // }
+        stage('Terraform Plan'){
+            steps {
+                    script {
+                        try {
+                            bat "terraform workspace new ${params.WORKSPACE}"
+                        } catch (err) {
+                            bat "terraform workspace select ${params.WORKSPACE}"
+                        }
+                        sh "terraform plan -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SECRET_KEY' \
+                        -out terraform.tfplan;echo \$? > status"
+                        stash name: "terraform-plan", includes: "terraform.tfplan"
+                    }
 
-        // stage('TerraformValidate'){
-        //     steps {
-        //         dir('jenkins-terraform-pipeline/ec2_pipeline/'){
-        //             sh "terraform validate"
-        //         }
-        //     }
-        // }
-
-        // stage('TerraformPlan'){
-        //     steps {
-        //         dir('jenkins-terraform-pipeline/ec2_pipeline/'){
-        //             script {
-        //                 try {
-        //                     sh "terraform workspace new ${params.WORKSPACE}"
-        //                 } catch (err) {
-        //                     sh "terraform workspace select ${params.WORKSPACE}"
-        //                 }
-        //                 sh "terraform plan -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SECRET_KEY' \
-        //                 -out terraform.tfplan;echo \$? > status"
-        //                 stash name: "terraform-plan", includes: "terraform.tfplan"
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('TerraformApply'){
+            }
+        }
+        // stage('Terraform Apply'){
         //     steps {
         //         script{
         //             def apply = false
