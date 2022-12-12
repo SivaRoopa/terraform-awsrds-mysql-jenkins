@@ -27,4 +27,9 @@ pipeline {
                     }
                 }
             }
+        stage('terraform Init check') {
+            steps{
+                sh 'terraform init'
+            }
+        }
 }
