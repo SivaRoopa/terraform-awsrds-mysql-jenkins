@@ -24,7 +24,7 @@ pipeline {
             steps {
                 
                     bat "terraform init -input=false"
-        }
+        } }
 
             stage('Terraform Format'){
                 steps {
@@ -77,4 +77,3 @@ pipeline {
         // }
     }
     }
-}
