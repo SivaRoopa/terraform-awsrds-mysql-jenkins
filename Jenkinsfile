@@ -26,13 +26,6 @@ pipeline {
                     bat "terraform init -input=false"
         } }
 
-            stage('Terraform Format'){
-                steps {
-                    bat "terraform fmt -list=true -write=false -diff=true -check=true"
-
-                }
-            }
-
             stage('Terraform Validate'){
                 steps {
                 
