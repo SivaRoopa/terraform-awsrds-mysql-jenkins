@@ -26,22 +26,22 @@ pipeline {
                     bat "terraform init -input=false"
         }
 
-        stage('Terraform Format'){
-            steps {
+            stage('Terraform Format'){
+                steps {
                     bat "terraform fmt -list=true -write=false -diff=true -check=true"
 
+                }
             }
-        }
 
-        stage('Terraform Validate'){
-            steps {
+            stage('Terraform Validate'){
+                steps {
                 
                     bat "terraform validate"
+                }
             }
-        }
 
-        stage('Terraform Plan'){
-            steps {
+            stage('Terraform Plan'){
+                steps {
                     script {
                         try {
                             bat "terraform workspace new ${params.WORKSPACE}"
@@ -53,8 +53,8 @@ pipeline {
                         stash name: "terraform-plan", includes: "terraform.tfplan"
                     }
 
+                }
             }
-        }
         // stage('Terraform Apply'){
         //     steps {
         //         script{
