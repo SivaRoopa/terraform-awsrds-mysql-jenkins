@@ -19,7 +19,6 @@ pipeline {
         stage('checkout') {
             steps {
                  script{
-                        {
                             git branch: 'main', credentialsId: 'Git-Credentials', url: 'https://github.com/SivaRoopa/terraform-awsrds-mysql-jenkins.git'
                         }
                     }
