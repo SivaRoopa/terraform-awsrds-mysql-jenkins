@@ -32,41 +32,19 @@ pipeline {
                     bat "terraform validate"
                 }
             }
-
             stage('Terraform Plan'){
                 steps {
-                    script {
-                        try {
-                            bat "terraform workspace new ${params.WORKSPACE}"
-                        } catch (err) {
-                            bat "terraform workspace select ${params.WORKSPACE}"
-                        }
-                        sh "terraform plan -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SECRET_KEY' \
-                        -out terraform.tfplan;echo \$? > status"
-                        stash name: "terraform-plan", includes: "terraform.tfplan"
-                    }
-
+                
+                    bat "terraform validate"
                 }
             }
-        // stage('Terraform Apply'){
-        //     steps {
-        //         script{
-        //             def apply = false
-        //             try {
-        //                 input message: 'Can you please confirm the apply', ok: 'Ready to Apply the Config'
-        //                 apply = true
-        //             } catch (err) {
-        //                 apply = false
-        //                  currentBuild.result = 'UNSTABLE'
-        //             }
-        //             if(apply){
-        //                 dir('jenkins-terraform-pipeline/ec2_pipeline/'){
-        //                     unstash "terraform-plan"
-        //                     sh 'terraform apply terraform.tfplan'
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+            stage('Terraform Apply'){
+                steps {
+                
+                    bat "terraform validate"
+                }
+            }
+
+
     }
     }
